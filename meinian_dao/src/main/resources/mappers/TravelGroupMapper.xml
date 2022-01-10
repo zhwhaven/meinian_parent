@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haven.dao.TravelGroupDao">
+    <insert id="add" parameterType="travelGroup" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `meinian`.`t_travelgroup`( `code`, `name`, `helpCode`, `sex`, `remark`, `attention`)
+         VALUES (#{code},#{name},#{helpCode},#{sex},#{remark},#{attention});
+    </insert>
+    <insert id="setGroupAndItem" >
+        INSERT INTO `meinian`.`t_travelgroup_travelitem`(`travelgroup_id`, `travelitem_id`)
+         VALUES
+         <foreach collection="idlist" separator="," item="id">
+             (#{groupid}, #{id})
+         </foreach>
+
+    </insert>
+    <select id="findPage" resultType="travelGroup">
+        select * from t_travelgroup
+        <where>
+            <if test="queryString!=null and queryString.length>0">
+                code=#{queryString} or name like concat("%",#{queryString},"%")
+            </if>
+        </where>
+    </select>
+   <resultMap id="groupResult" type="travelGroup">
+       <id column="id" property="id"></id>
+       <result column="code" property="code"></result>
+       <result column="name" property="name"></result>
+       <result column="helpCode" property="helpCode"></result>
+       <result column="sex" property="sex"></result>
+       <result column="remark" property="remark"></result>
+       <result column="attention" property="attention"></result>
+       <collection column="id" property="travelItems"
+                   select="com.haven.dao.TravelItemDao.findAllByGroupId"></collection>
+
+
+   </resultMap>
+    <select id="findAllBySetmealId" parameterType="integer" resultMap="groupResult">
+        select * from t_travelgroup where id in(
+        select travelgroup_id from t_setmeal_travelgroup where setmeal_id=#{id}
+        )
+    </select>
+</mapper>
+
+

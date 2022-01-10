@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haven.dao.OrderDao">
+    <insert id="add" parameterType="order">
+        insert into t_order (member_id,orderDate,orderType,orderStatus,setmeal_id)
+        values (#{memberId},#{orderDate},#{orderType},#{orderStatus},#{setmealId})
+    </insert>
+    <select id="findByMessage" parameterType="order" resultType="order">
+        select * from t_order
+        where member_id=#{memberId} and orderDate=#{orderDate} and setmeal_id=#{setmealId}
+    </select>
+
+    <select id="countOrderByTodayTime" parameterType="string" resultType="integer">
+        select count(*) from t_order where orderDate=#{reportDate}
+    </select>
+
+    <select id="countVisitByTodayTime" parameterType="string" resultType="integer">
+        select count(*) from t_order where orderDate=#{reportDate} and orderStatus='已出游'
+    </select>
+
+    <select id="countOrderByWeekandMonthTime" parameterType="string" resultType="integer">
+        select count(*) from t_order where orderDate &lt;=#{end} and orderDate &gt;=#{start}
+    </select>
+
+    <select id="countVisitByWeekandMonthTime" parameterType="string" resultType="integer">
+        select count(*) from t_order where orderDate &lt;=#{end} and orderDate &gt;=#{start}
+        and orderStatus='已出游'
+    </select>
+<!-- {name:'深圳3天2晚游套餐',setmeal_count:200,proportion:0.222}-->
+    <select id="findHotSetmeal" resultType="map">
+     select s.name name,count(o.id) setmeal_count,count(o.id)/(select count(*) from t_order)
+     proportion
+      from t_order o,t_setmeal s
+     where o.setmeal_id=s.id group by s.name order by count(o.id) DESC LIMIT 0,3
+    </select>
+</mapper>
+

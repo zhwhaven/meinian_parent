@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haven.dao.RoleDao">
+    <resultMap id="RoleMap" type="role">
+       <id column="id" property="id"></id>
+       <result column="name" property="name"></result>
+       <result column="keyword" property="keyword"></result>
+       <result column="description" property="description"></result>
+        <collection property="permissions" column="id" select="com.haven.dao.PermissionDao.selectPermissionByRoleid"></collection>
+    </resultMap>
+    <select id="selectRoleByUserID" resultMap="RoleMap">
+        select * from t_role where id in(select role_id from t_user_role where user_id=#{id})
+    </select>
+</mapper>

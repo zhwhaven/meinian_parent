@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haven.dao.MemberDao">
+
+    <select id="findByTelephone" resultType="member">
+        select * from t_member where phoneNumber=#{telephone}
+    </select>
+
+    <insert id="add" parameterType="map" useGeneratedKeys="true" keyProperty="id">
+        insert into t_member
+        (sex,idCard,phoneNumber,regTime)
+        values (
+        #{sex},#{idCard},#{phoneNumber},#{regTime}
+        )
+    </insert>
+
+    <select id="getMemberReport" parameterType="string" resultType="integer">
+      select count(*) from t_member where regTime &lt;=#{month};
+    </select>
+
+    <select id="countNewAddByTodayTime" parameterType="string" resultType="integer">
+        select count(*) from t_member where regTime=#{reportDate}
+    </select>
+
+    <select id="getAllMember" resultType="integer">
+        select count(*) from t_member
+    </select>
+
+    <select id="getNewAddByWeekAndMonthTime" parameterType="string" resultType="integer">
+        select count(*) from t_member where regTime &gt;=#{day}
+    </select>
+</mapper>

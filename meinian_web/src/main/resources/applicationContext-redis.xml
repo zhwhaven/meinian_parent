@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">-->
+<!--&lt;!&ndash;        最大连接数&ndash;&gt;-->
+<!--        <property name="maxTotal" value="100"></property>-->
+<!--&lt;!&ndash;        最大空闲连接数&ndash;&gt;-->
+<!--        <property name="maxIdle" value="50"></property>-->
+<!--&lt;!&ndash;        允许借调&ndash;&gt;-->
+<!--        <property name="testOnBorrow" value="true"></property>-->
+<!--&lt;!&ndash;        允许归还&ndash;&gt;-->
+<!--        <property name="testOnReturn" value="true"></property>-->
+<!--    </bean>-->
+
+
+
+    <!--Jedis连接池的相关配置-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!--最大连接数, 默认8个-->
+        <property name="maxTotal" value="100"></property>
+        <!--最大空闲连接数, 默认8个-->
+        <property name="maxIdle" value="50"></property>
+        <!--允许借调 在获取连接的时候检查有效性, 默认false-->
+        <property name="testOnBorrow" value="true"/>
+        <!--允许归还 在return给pool时，是否提前进行validate操作-->
+        <property name="testOnReturn" value="true"/>
+    </bean>
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"></constructor-arg>
+        <constructor-arg name="host" value="192.168.6.100"></constructor-arg>
+        <constructor-arg name="port" value="9990" type="int"></constructor-arg>
+        <constructor-arg name="timeout" value="30000" type="int"></constructor-arg>
+
+    </bean>
+</beans>

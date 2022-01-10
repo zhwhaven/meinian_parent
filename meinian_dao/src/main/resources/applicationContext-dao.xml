@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+    <bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+           <property name="username" value="${jdbc.username}"></property>
+           <property name="password" value="${jdbc.password}"></property>
+           <property name="url" value="${jdbc.url}"></property>
+           <property name="driverClassName" value="${jdbc.driverClassName}"></property>
+    </bean>
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+<!--        别名-->
+        <property name="typeAliasesPackage" value="com.haven.pojo"></property>
+<!--        mapper文件-->
+        <property name="mapperLocations" value="classpath:mappers/*.xml"></property>
+<!--        配置文件-->
+        <property name="configLocation" value="classpath:sqlMapConfig.xml"></property>
+    </bean>
+<!--    扫描接口-->
+    <mybatis-spring:scan base-package="com.haven.dao"></mybatis-spring:scan>
+</beans>

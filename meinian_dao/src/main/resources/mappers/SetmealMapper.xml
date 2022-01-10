@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haven.dao.SetmealDao">
+
+    <insert id="add" parameterType="setmeal" useGeneratedKeys="true" keyProperty="id">
+        insert into t_setmeal(name,code,helpCode,sex,age,price,remark,attention,img)
+        values (#{name},#{code},#{helpCode},#{sex},#{age},#{price},#{remark},#{attention},#{img})
+    </insert>
+    <insert id="setSetmealAndGroup">
+        insert into t_setmeal_travelgroup(setmeal_id,travelgroup_id)
+        values
+        <foreach collection="list" item="groupid" separator=",">
+            (#{setmealId},#{groupid})
+        </foreach>
+            </insert>
+    <select id="findPage" resultType="setmeal">
+        select * from t_setmeal
+        <where>
+            <if test="queryString!=null and queryString.length>0">
+                code=#{queryString} or name like concat("%",#{queryString},"%")
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="setmealResult" type="setmeal">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="code" column="code"></result>
+        <result property="helpCode" column="helpCode"></result>
+        <result property="sex" column="sex"></result>
+        <result property="age" column="age"></result>
+        <result property="price" column="price"></result>
+        <result property="remark" column="remark"></result>
+        <result property="attention" column="attention"></result>
+        <result property="img" column="img"></result>
+        <collection property="travelGroups" column="id"
+                    select="com.haven.dao.TravelGroupDao.findAllBySetmealId"></collection>
+    </resultMap>
+    <select id="findById" parameterType="integer" resultMap="setmealResult">
+        select * from t_setmeal where id=#{id}
+    </select>
+
+    <select id="getSetmealReport" resultType="map">
+          select count(o.id) value,s.name name from t_order o , t_setmeal s
+	 where o.setmeal_id=s.id GROUP BY s.name
+    </select>
+</mapper>
+
+
